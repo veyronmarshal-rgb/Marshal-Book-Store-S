@@ -1,129 +1,44 @@
-let messages = [];
+let currentQuestion = 0;
+let scores = { business: 0, romance: 0, curious: 0 };
 
-const reviews = [
-    { name: 'Amadou S.', comment: 'Sélection incroyable, le pack Business m\'a ouvert les yeux.', rating: 5 },
-    { name: 'Fatou K.', comment: 'Reçu sur WhatsApp rapidement. Service au top !', rating: 5 },
-    { name: 'Jean M.', comment: 'L\'IA a vraiment bien ciblé mes goûts.', rating: 4 },
-    { name: 'Moussa T.', comment: 'Excellent rapport qualité/prix pour 2000 FCFA.', rating: 5 },
-    { name: 'Aminata Z.', comment: 'Le service client est très réactif.', rating: 5 }
+const PACKS_DATA = {
+    business: { id: "business", name: "Business & Développement Personnel", price: "2 999", desc: "Boostez votre mentalité et vos finances.", icon: "🚀" },
+    romance: { id: "romance", name: "Romance & Divertissement", price: "1 999", desc: "Évadez-vous avec des récits passionnants.", icon: "💖" },
+    curious: { id: "curious", name: "Curieux Littéraire", price: "2 499", desc: "Élargissez votre culture générale.", icon: "🌍" }
+};
+
+const questions = [
+    { q: "Qu'est-ce qui vous motive le plus ?", options: [{ text: "L'argent et le succès", target: "business" }, { text: "Le plaisir et l'évasion", target: "romance" }, { text: "Apprendre et découvrir", target: "curious" }] },
+    { q: "Votre style de lecture ?", options: [{ text: "Pratique et efficace", target: "business" }, { text: "Émotif et captivant", target: "romance" }, { text: "Culturel et varié", target: "curious" }] },
+    { q: "Votre but cette année ?", options: [{ text: "Devenir un leader", target: "business" }, { text: "Être plus épanoui", target: "romance" }, { text: "Être plus cultivé", target: "curious" }] }
 ];
 
-function displayReviews() {
-    const container = document.getElementById('reviews-container');
-    if(container) {
-        container.innerHTML = reviews.map(rev => `
-            <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700">
-                <div class="flex justify-between items-center mb-1">
-                    <span class="font-bold text-sm text-amber-500">${rev.name}</span>
-                    <span class="text-xs text-yellow-500">${'★'.repeat(rev.rating)}</span>
-                </div>
-                <p class="text-xs text-slate-400 italic">"${rev.comment}"</p>
-            </div>
-        `).join('');
-    }
+function startQuiz() { currentQuestion = 0; scores = { business: 0, romance: 0, curious: 0 }; showQuestion(); }
+
+function showQuestion() {
+    const q = questions[currentQuestion];
+    let optionsHtml = q.options.map((opt) => `<button onclick="handleAnswer('${opt.target}')" class="w-full text-left p-4 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl mb-3 text-sm transition-all">${opt.text}</button>`).join('');
+    document.getElementById('app').innerHTML = `<div class="space-y-6 animate-fadeIn"><h2 class="text-2xl font-bold">${q.q}</h2><div class="pt-2">${optionsHtml}</div></div>`;
 }
 
-async function startQuiz() {
-    document.getElementById('app').innerHTML = `<div class="p-8 text-center animate-pulse text-amber-500">L'IA prépare vos questions...</div>`;
-    askQuestion("Bonjour ! Je souhaite trouver un pack de livres.");
+function handleAnswer(target) { scores[target]++; currentQuestion++; if (currentQuestion < questions.length) { showQuestion(); } else { showResult(); } }
+
+function showResult() {
+    const winnerId = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+    const rec = PACKS_DATA[winnerId];
+    let others = Object.values(PACKS_DATA).filter(p => p.id !== winnerId).map(p => `<div onclick="selectPack('${p.id}')" class="p-4 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer flex justify-between items-center"><span class="text-sm">${p.icon} ${p.name}</span><span class="text-xs font-bold text-amber-500">${p.price} F</span></div>`).join('');
+    document.getElementById('app').innerHTML = `<div class="space-y-8 animate-fadeIn"><div class="bg-slate-800 p-6 rounded-2xl border-2 border-amber-500 shadow-2xl text-center"><h2 class="text-2xl font-bold text-amber-500">${rec.name}</h2><p class="text-slate-300 text-sm italic my-4 italic">"${rec.desc}"</p><div class="text-2xl font-bold mb-6">${rec.price} FCFA</div><button onclick="selectPack('${rec.id}')" class="w-full bg-amber-600 py-4 rounded-xl font-bold transition-all active:scale-95">Choisir ce pack</button></div><div class="space-y-3"><p class="text-center text-[10px] text-slate-500 uppercase font-bold">Ou choisissez une autre option</p>${others}</div></div>`;
 }
 
-async function askQuestion(userInput) {
-    messages.push({ role: "user", parts: [{ text: userInput }] });
-    
-    // Affichage d'un loader pendant l'attente
-    const app = document.getElementById('app');
-    const oldContent = app.innerHTML;
-    app.innerHTML = `<div class="p-8 text-center animate-pulse text-amber-500">Analyse en cours...</div>`;
-
-    try {
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ messages })
-        });
-        
-        const data = await response.json();
-        messages.push({ role: "model", parts: [{ text: data.text }] });
-
-        if (data.text.includes('{')) {
-            const cleanJson = data.text.substring(data.text.indexOf('{'), data.text.lastIndexOf('}') + 1);
-            showRecommendation(JSON.parse(cleanJson));
-        } else {
-            renderQuestion(data.text);
-        }
-    } catch (e) {
-        app.innerHTML = `<div class="p-4 bg-red-500/20 text-red-400 rounded-xl">Erreur de connexion. Vérifiez votre clé API.</div>`;
-    }
+function selectPack(id) {
+    const p = PACKS_DATA[id];
+    const monNumero = "22897599262"; // <<-- COLLE TES CHIFFRES ICI SANS ESPACES
+    document.getElementById('app').innerHTML = `<div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-6 animate-fadeIn"><h2 class="text-xl font-bold text-center">Paiement : ${p.name}</h2><div class="bg-slate-900 p-4 rounded-xl border border-slate-700 text-center"><p class="text-sm">Envoyez <span class="font-bold text-white">${p.price} FCFA</span> au :</p><p class="text-2xl font-mono font-bold text-amber-500 my-2">${monNumero}</p><p class="text-[10px] text-slate-500 uppercase font-bold italic">Nom : VOTRE NOM ICI</p></div><div class="space-y-4"><input type="text" id="uName" class="w-full p-4 bg-slate-900 border border-slate-700 rounded-xl outline-none" placeholder="Nom complet"><input type="email" id="uEmail" class="w-full p-4 bg-slate-900 border border-slate-700 rounded-xl outline-none" placeholder="Email"><button onclick="send('${p.name}', '${p.price}', '${monNumero}')" class="w-full bg-emerald-600 py-4 rounded-xl font-bold">J'ai payé</button></div></div>`;
 }
 
-function renderQuestion(text) {
-    document.getElementById('app').innerHTML = `
-        <div class="space-y-6 animate-fadeIn">
-            <div class="p-6 bg-slate-800 rounded-2xl border border-slate-700 shadow-xl text-lg">${text}</div>
-            <input type="text" id="answer" class="w-full p-4 bg-slate-900 rounded-xl border border-slate-700 focus:border-amber-500 outline-none" placeholder="Écrivez ici...">
-            <button onclick="askQuestion(document.getElementById('answer').value)" class="w-full bg-amber-600 py-4 rounded-xl font-bold shadow-lg">Continuer</button>
-        </div>
-    `;
+function send(pName, price, num) {
+    const n = document.getElementById('uName').value;
+    const e = document.getElementById('uEmail').value;
+    if(!n || !e) return alert("Remplissez tout !");
+    window.open(`https://wa.me/${num}?text=${encodeURIComponent("Bonjour Libeer ! Je suis " + n + ". J'ai payé " + price + " F pour le pack " + pName + ". Mon email : " + e)}`, '_blank');
 }
-
-function showRecommendation(rec) {
-    const packs = {
-        business: { name: "Développement & Business", desc: "Boostez votre carrière et vos finances." },
-        romance: { name: "Romance & Émotions", desc: "Évadez-vous avec des récits passionnants." },
-        curious: { name: "Culture & Curiosité", desc: "Élargissez votre culture générale." }
-    };
-    const pack = packs[rec.packId] || packs.curious;
-
-    document.getElementById('app').innerHTML = `
-        <div class="bg-slate-800 p-6 rounded-2xl border-2 border-amber-500 space-y-6 shadow-2xl">
-            <h2 class="text-2xl font-bold text-amber-500">${pack.name}</h2>
-            <p class="text-slate-300 italic">"${rec.justification}"</p>
-            <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-3">
-                <p class="text-sm font-bold text-slate-400 uppercase tracking-tighter">Instructions de paiement</p>
-                <p class="text-xs">Envoyez 2000 FCFA par T-Money ou Flooz :</p>
-                <p class="text-2xl font-mono font-bold text-white tracking-widest">+228 97 59 92 62</p>
-                <p class="text-sm text-amber-500 font-semibold">Nom: KASSANDOU Essonani</p>
-            </div>
-            <button onclick="showFinalForm()" class="w-full bg-emerald-600 py-4 rounded-xl font-bold shadow-lg">J'ai envoyé les 2000 FCFA</button>
-        </div>
-    `;
-}
-
-function showFinalForm() {
-    document.getElementById('app').innerHTML = `
-        <div class="space-y-6">
-            <div class="text-center"><h2 class="text-2xl font-bold">Dernière étape !</h2><p class="text-slate-400">Où devons-nous envoyer vos livres ?</p></div>
-            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-4">
-                <input type="text" id="name" class="w-full p-4 bg-slate-900 rounded-xl border border-slate-700 outline-none" placeholder="Nom complet">
-                <input type="email" id="email" class="w-full p-4 bg-slate-900 rounded-xl border border-slate-700 outline-none" placeholder="Adresse Email">
-                <input type="tel" id="whatsapp" class="w-full p-4 bg-slate-900 rounded-xl border border-slate-700 outline-none" placeholder="Numéro WhatsApp">
-                <button onclick="confirmOrder()" class="w-full bg-amber-600 py-4 rounded-xl font-bold">Confirmer et recevoir</button>
-            </div>
-        </div>
-    `;
-}
-
-function confirmOrder() {
-    // 1. Remplace par ton vrai numéro (ex: 22890123456)
-    const monNumero = "228XXXXXXXX"; 
-    
-    // 2. Récupère les infos du formulaire
-    const nom = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    
-    // 3. Crée le message automatique
-    const message = `Bonjour ! Je suis ${nom}. J'ai effectué le paiement de 2000 FCFA pour mon pack de livres. Mon email est : ${email}.`;
-    
-    // 4. Génère le lien propre (format international)
-    const lienWhatsApp = `https://wa.me/${monNumero}?text=${encodeURIComponent(message)}`;
-    
-    // 5. Ouvre WhatsApp
-    window.open(lienWhatsApp, '_blank');
-}
-
-// Lancement initial
-displayReviews();
-
-
-
