@@ -33,7 +33,7 @@ function showResult() {
 function selectPack(id) {
     const p = PACKS_DATA[id];
     const monNumero = "22897599262"; // <<-- COLLE TES CHIFFRES ICI SANS ESPACES
-    document.getElementById('app').innerHTML = `<div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-6 animate-fadeIn"><h2 class="text-xl font-bold text-center">Paiement : ${p.name}</h2><div class="bg-slate-900 p-4 rounded-xl border border-slate-700 text-center"><p class="text-sm">Envoyez <span class="font-bold text-white">${p.price} FCFA</span> au :</p><p class="text-2xl font-mono font-bold text-amber-500 my-2">${monNumero}</p><p class="text-[10px] text-slate-500 uppercase font-bold italic">Nom : VOTRE NOM ICI</p></div><div class="space-y-4"><input type="text" id="uName" class="w-full p-4 bg-slate-900 border border-slate-700 rounded-xl outline-none" placeholder="Nom complet"><input type="email" id="uEmail" class="w-full p-4 bg-slate-900 border border-slate-700 rounded-xl outline-none" placeholder="Email"><button onclick="send('${p.name}', '${p.price}', '${monNumero}')" class="w-full bg-emerald-600 py-4 rounded-xl font-bold">J'ai payé</button></div></div>`;
+    document.getElementById('app').innerHTML = `<div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-6 animate-fadeIn"><h2 class="text-xl font-bold text-center">Paiement : ${p.name}</h2><div class="bg-slate-900 p-4 rounded-xl border border-slate-700 text-center"><p class="text-sm">Envoyez <span class="font-bold text-white">${p.price} FCFA</span> au :</p><p class="text-2xl font-mono font-bold text-amber-500 my-2">${monNumero}</p><p class="text-[10px] text-slate-500 uppercase font-bold italic">Nom : KASSANDOU Essonani</p></div><div class="space-y-4"><input type="text" id="uName" class="w-full p-4 bg-slate-900 border border-slate-700 rounded-xl outline-none" placeholder="Nom complet"><input type="email" id="uEmail" class="w-full p-4 bg-slate-900 border border-slate-700 rounded-xl outline-none" placeholder="Email"><button onclick="send('${p.name}', '${p.price}', '${monNumero}')" class="w-full bg-emerald-600 py-4 rounded-xl font-bold">J'ai payé</button></div></div>`;
 }
 
 function send(pName, price, num) {
@@ -42,3 +42,4 @@ function send(pName, price, num) {
     if(!n || !e) return alert("Remplissez tout !");
     window.open(`https://wa.me/${num}?text=${encodeURIComponent("Bonjour Libeer ! Je suis " + n + ". J'ai payé " + price + " F pour le pack " + pName + ". Mon email : " + e)}`, '_blank');
 }
+
