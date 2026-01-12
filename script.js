@@ -82,7 +82,7 @@ function showRecommendation(rec) {
             <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-3">
                 <p class="text-sm font-bold text-slate-400 uppercase tracking-tighter">Instructions de paiement</p>
                 <p class="text-xs">Envoyez 2000 FCFA par T-Money ou Flooz :</p>
-                <p class="text-2xl font-mono font-bold text-white tracking-widest">+228 XX XX XX XX</p>
+                <p class="text-2xl font-mono font-bold text-white tracking-widest">+228 97 59 92 62</p>
                 <p class="text-sm text-amber-500 font-semibold">Nom: VOTRE NOM ICI</p>
             </div>
             <button onclick="showFinalForm()" class="w-full bg-emerald-600 py-4 rounded-xl font-bold shadow-lg">J'ai envoyé les 2000 FCFA</button>
@@ -114,3 +114,4 @@ function confirmOrder() {
 
 // Lancement initial
 displayReviews();
+
