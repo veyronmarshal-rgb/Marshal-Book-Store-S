@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
   try {
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+      model: "gemini-3-flash-preview",
       systemInstruction: "Tu es l'expert Libeer. Ton but est de recommander un pack de livres numériques parmi : 'business', 'romance' ou 'curious'. Pose EXACTEMENT 3 questions courtes, une par une. Après la 3ème réponse de l'utilisateur, analyse ses goûts et renvoie UNIQUEMENT un objet JSON comme ceci : { \"packId\": \"id_du_pack\", \"justification\": \"ta raison courte\" }. Ne dis rien d'autre que le JSON à la fin."
     });
 
