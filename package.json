@@ -1,0 +1,10 @@
+{
+  "name": "libeer-app",
+  "version": "1.0.0",
+  "description": "Vente de packs de livres numériques avec recommandation IA",
+  "main": "api/chat.js",
+  "type": "module",
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0"
+  }
+}

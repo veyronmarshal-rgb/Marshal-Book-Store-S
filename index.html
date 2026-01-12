@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libeer - Ton Pack de Livres</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #0f172a; color: white; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="p-4 flex flex-col items-center min-h-screen">
+    <header class="w-full max-w-md text-center py-8">
+        <h1 class="text-4xl font-serif font-bold text-amber-500">Libeer</h1>
+        <p class="text-slate-400">Le pack de livres fait pour toi</p>
+    </header>
+
+    <main id="app" class="w-full max-w-md space-y-6">
+        <div id="home-screen" class="text-center space-y-8">
+            <div class="bg-slate-800 p-8 rounded-full border border-slate-700 inline-block">
+                <img src="https://api.iconify.design/lucide:book.svg?color=%23f59e0b" class="w-16 h-16">
+            </div>
+            <h2 class="text-3xl font-bold">Trouve ton pack idéal en 3 questions</h2>
+            <button onclick="startQuiz()" class="w-full bg-amber-600 py-4 rounded-xl font-bold shadow-lg">Commencer</button>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
