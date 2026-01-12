@@ -83,7 +83,7 @@ function showRecommendation(rec) {
                 <p class="text-sm font-bold text-slate-400 uppercase tracking-tighter">Instructions de paiement</p>
                 <p class="text-xs">Envoyez 2000 FCFA par T-Money ou Flooz :</p>
                 <p class="text-2xl font-mono font-bold text-white tracking-widest">+228 97 59 92 62</p>
-                <p class="text-sm text-amber-500 font-semibold">Nom: VOTRE NOM ICI</p>
+                <p class="text-sm text-amber-500 font-semibold">Nom: KASSANDOU Essonani</p>
             </div>
             <button onclick="showFinalForm()" class="w-full bg-emerald-600 py-4 rounded-xl font-bold shadow-lg">J'ai envoyé les 2000 FCFA</button>
         </div>
@@ -114,4 +114,5 @@ function confirmOrder() {
 
 // Lancement initial
 displayReviews();
+
 
