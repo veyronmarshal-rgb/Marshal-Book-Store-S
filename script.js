@@ -105,14 +105,25 @@ function showFinalForm() {
 }
 
 function confirmOrder() {
-    const wa = document.getElementById('whatsapp').value;
-    const name = document.getElementById('name').value;
-    const msg = encodeURIComponent(`Bonjour ! Je suis ${name}. J'ai payé mon pack Libeer. Voici mon numéro de transfert...`);
-    window.open(`https://wa.me/228XXXXXXXX?text=${msg}`, '_blank');
-    alert("C'est parfait ! On se retrouve sur WhatsApp pour la livraison.");
+    // 1. Remplace par ton vrai numéro (ex: 22890123456)
+    const monNumero = "228XXXXXXXX"; 
+    
+    // 2. Récupère les infos du formulaire
+    const nom = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    
+    // 3. Crée le message automatique
+    const message = `Bonjour ! Je suis ${nom}. J'ai effectué le paiement de 2000 FCFA pour mon pack de livres. Mon email est : ${email}.`;
+    
+    // 4. Génère le lien propre (format international)
+    const lienWhatsApp = `https://wa.me/${monNumero}?text=${encodeURIComponent(message)}`;
+    
+    // 5. Ouvre WhatsApp
+    window.open(lienWhatsApp, '_blank');
 }
 
 // Lancement initial
 displayReviews();
+
 
 
